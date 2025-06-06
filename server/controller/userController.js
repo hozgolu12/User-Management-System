@@ -15,7 +15,7 @@ const create= async (req,res)=>{
       }
     }
  
-const getAllUsers=async(res)=>{
+const getAllUsers=async(req,res)=>{
     try {
         const user=await User.find();
         if (!user || user.length === 0) {
