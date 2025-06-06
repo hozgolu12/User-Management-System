@@ -6,16 +6,16 @@ const create= async (req,res)=>{
         const {email}=req.body;
         const userExist=await User.findOne({email});
         if(userExist){
-            return res.status(200).json({Message:"User already exist"});
+          return res.status(200).json({Message:"User already exist"});
         }
         await user.save();
         res.status(200).json({Message:"User Added successfully"});
-    } catch (error) {
+      } catch (error) {
         res.status(400).json({Message:error.message});
+      }
     }
-}
-
-const getAllUsers=async(req,res)=>{
+ 
+const getAllUsers=async(res)=>{
     try {
         const user=await User.find();
         if (!user || user.length === 0) {
@@ -53,9 +53,7 @@ const update = async (req, res) => {
         if(userExist){
             return res.status(200).json({Message:"Email already exist"});
         }
-        const updatedUser = await User.findByIdAndUpdate(id, req.body, {
-          new: true
-        });
+        await User.findByIdAndUpdate(id, req.body, {new: true});
         res.status(200).json({ Message: "User updated successfully"});
       }
     } catch (error) {

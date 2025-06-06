@@ -11,7 +11,6 @@ const Update = () => {
   });
   const navigate=useNavigate();
   const { id } = useParams();
-  console.log(id);
   useEffect(() => {
     axios.get(`http://localhost:8000/api/user/${id}`)
       .then((response) => {
