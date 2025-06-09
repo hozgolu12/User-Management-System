@@ -5,8 +5,14 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 function User() {
-  // Sample data for demonstration 
-  const [users, setUsers] = useState([]);
+  // Sample data for demonstration
+  interface User {
+    _id: string;
+    name: string;
+    email: string;
+    address: string;
+  } 
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() =>{
@@ -30,7 +36,7 @@ const deleteUser = async (id) => {
       await axios.delete(`http://localhost:8000/api/delete/user/${id}`)
       .then((response) => {
         setUsers(users.filter(user => user._id !== id));
-        toast.success(response.data.Message,{position:'top-right'});
+        toast.success(response.data.message,{position:'top-right'});
       })
       
       .catch ((error)=> {
@@ -107,7 +113,7 @@ const deleteUser = async (id) => {
                     </td>
                     <td className="px-6 py-4 text-sm font-medium text-center">
                       <div className="flex justify-center space-x-2">
-                        <Link to={"/update/"+user._id} 
+                        <Link to={"/update/"+user._id }
                           className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-700 rounded hover:bg-blue-100 border border-blue-200 transition-colors duration-150 group"
                         >
                           <Edit size={14} className="mr-1 group-hover:text-blue-800" />
