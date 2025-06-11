@@ -2,35 +2,35 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import React from 'react';
 
 const AddUser = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    address: ''
+    address: '',
   });
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
+  const handleChange = (e: { target: { name: string; value: string } }) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
   };
 
-
-
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
-    axios.post('http://localhost:8000/api/user', formData)
+    axios
+      .post('http://localhost:3000/api/users', formData)
       .then((response: any) => {
         toast.success(response.data.message, { position: 'top-right' });
       })
-      .catch((error: any) => { 
+      .catch((error: any) => {
         toast.error(error.response.data.message, { position: 'top-right' });
-       })
+      });
     setFormData({ name: '', email: '', address: '' });
     navigate('/');
   };
@@ -41,15 +41,17 @@ const AddUser = () => {
 
   return (
     <div className="w-full max-w-md mx-auto p-8">
-      <h3 className="text-2xl font-semibold text-gray-800 mb-6">Add New User</h3>
+      <h3 className="text-2xl font-semibold text-gray-800 mb-6">
+        Add New User
+      </h3>
       <div className="px-6 py-4 bg-gray-50 text-right">
-      <button
-        type="button"
-        className="w-full inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-        onClick={handleBack}
-      >
-        Back
-      </button>
+        <button
+          type="button"
+          className="w-full inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+          onClick={handleBack}
+        >
+          Back
+        </button>
       </div>
       <form
         onSubmit={handleSubmit}
