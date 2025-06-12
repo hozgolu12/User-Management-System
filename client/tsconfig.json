@@ -112,6 +112,6 @@
     "skipLibCheck": true, 
   },
   
-  "include": ["src/**/*", "src/**/*.ts", "src/**/*.tsx","eslint.config.js"]                               /* Skip type checking all .d.ts files. */
+  "include": ["src/**/*", "src/**/*.ts", "src/**/*.tsx","eslint.config.mjs"]                               /* Skip type checking all .d.ts files. */
   
 }

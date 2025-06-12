@@ -19,13 +19,13 @@ function User() {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:3000/api/users');
-        setUsers(response.data.data);
+        setUsers((response.data as { data: User[] }).data);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-    fetchData();
+    void fetchData();
   }, []);
 
   const deleteUser = async (id: string) => {
@@ -129,6 +129,7 @@ function User() {
                             <span>Edit</span>
                           </Link>
                           <button
+                            // eslint-disable-next-line @typescript-eslint/no-misused-promises
                             onClick={() => deleteUser(user._id)}
                             className="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-700 rounded hover:bg-red-100 border border-red-200 transition-colors duration-150 group"
                           >
