@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import React from 'react';
@@ -23,20 +23,27 @@ const AddUser = () => {
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
+    interface ApiResponse {
+      message: string;
+    }
+
     axios
       .post('http://localhost:3000/api/users', formData)
-      .then((response: any) => {
+      .then((response: AxiosResponse<ApiResponse>) => {
         toast.success(response.data.message, { position: 'top-right' });
       })
-      .catch((error: any) => {
-        toast.error(error.response.data.message, { position: 'top-right' });
+      .catch((error: AxiosError<ApiResponse>) => {
+        toast.error(
+          error.response?.data.message ?? 'An unknown error occurred',
+          { position: 'top-right' },
+        );
       });
     setFormData({ name: '', email: '', address: '' });
-    navigate('/');
+    void navigate('/');
   };
 
   const handleBack = () => {
-    navigate('/');
+    void navigate('/');
   };
 
   return (

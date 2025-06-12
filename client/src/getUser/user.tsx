@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Edit, Trash2, UserPlus } from 'lucide-react';
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
@@ -30,14 +30,17 @@ function User() {
 
   const deleteUser = async (id: string) => {
     if (confirm('Are you sure you want to delete this user?')) {
+      interface ApiResponse {
+        message: string;
+      }
       await axios
         .delete(`http://localhost:3000/api/users/${id}`)
-        .then((response) => {
+        .then((response: AxiosResponse<ApiResponse>) => {
           setUsers(users.filter((user) => user._id !== id));
           toast.success(response.data.message, { position: 'top-right' });
         })
 
-        .catch((error) => {
+        .catch((error: AxiosError<ApiResponse>) => {
           console.error('Error deleting user:', error);
         });
     }

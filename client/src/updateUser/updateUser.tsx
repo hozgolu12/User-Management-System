@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import React from 'react';
@@ -16,13 +16,20 @@ const Update = () => {
     axios
       .get(`http://localhost:3000/api/users/${id}`)
       .then((response) => {
-        setFormData(response.data.data);
+        const userData = response.data as {
+          data: {
+            name: string;
+            email: string;
+            address: string;
+          };
+        };
+        setFormData(userData.data);
       })
       .catch((error) => {
         console.error(error);
       });
   }, [id]);
-  const handleChange = (e: { target: { name: any; value: any } }) => {
+  const handleChange = (e: { target: { name: string; value: string } }) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
@@ -39,20 +46,26 @@ const Update = () => {
       address: formData.address,
     };
 
+    interface ApiResponse {
+      message: string;
+    }
+
     axios
       .post(`http://localhost:3000/api/users/${id}`, updatedData)
-      .then((response: React.SetStateAction<any>) => {
+      .then((response: AxiosResponse<ApiResponse>) => {
         toast.success(response.data.message, { position: 'top-right' });
       })
-      .catch((error: any) => {
-        console.log(error);
-        toast.error(error.response.data.message, { position: 'top-right' });
+      .catch((error: AxiosError<ApiResponse>) => {
+        toast.error(
+          error.response?.data.message ?? 'An unknown error occurred',
+          { position: 'top-right' },
+        );
       });
     setFormData({ name: '', email: '', address: '' });
-    navigate('/');
+    void navigate('/');
   };
   const handleBack = () => {
-    navigate('/');
+    void navigate('/');
   };
 
   return (
