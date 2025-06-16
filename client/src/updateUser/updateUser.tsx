@@ -15,16 +15,17 @@ const Update = () => {
   useEffect(() => {
     axios
       .get(`http://localhost:3000/api/users/${id}`)
-      .then((response) => {
-        const userData = response.data as {
-          data: {
+      .then(
+        (
+          response: AxiosResponse<{
             name: string;
             email: string;
             address: string;
-          };
-        };
-        setFormData(userData.data);
-      })
+          }>,
+        ) => {
+          setFormData(response.data);
+        },
+      )
       .catch((error) => {
         console.error(error);
       });
@@ -52,8 +53,8 @@ const Update = () => {
 
     axios
       .post(`http://localhost:3000/api/users/${id}`, updatedData)
-      .then((response: AxiosResponse<ApiResponse>) => {
-        toast.success(response.data.message, { position: 'top-right' });
+      .then(() => {
+        toast.success('User updated successfully', { position: 'top-right' });
       })
       .catch((error: AxiosError<ApiResponse>) => {
         toast.error(

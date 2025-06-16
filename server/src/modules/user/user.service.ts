@@ -13,12 +13,16 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
   async create(createUserDto: CreateUserDto): Promise<User> {
+    if (!createUserDto) {
+      throw new Error('createUserDto is null or undefined');
+    }
+
     try {
       const createdUser = new this.userModel(createUserDto);
       return await createdUser.save();
     } catch (error: any) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (error.code === 11000) {
+      if (error?.code === 11000) {
         throw new ConflictException('Email already exists');
       }
       throw error;

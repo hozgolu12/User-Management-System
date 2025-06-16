@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 function User() {
-  // Sample data for demonstration
   interface User {
     _id: string;
     name: string;
@@ -18,11 +17,14 @@ function User() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/users');
-        setUsers((response.data as { data: User[] }).data);
-        setLoading(false);
+        const response = await axios.get<User[]>(
+          'http://localhost:3000/api/users',
+        );
+        setUsers(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
       }
     };
     void fetchData();

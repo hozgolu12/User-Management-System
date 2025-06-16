@@ -17,42 +17,37 @@ export class UserController {
 
   @Post()
   @HttpCode(201)
-  async create(@Body() createUserDto: CreateUserDto) {
-    const user = await this.userService.create(createUserDto);
-    return {
-      message: 'User created successfully',
-      data: user,
-    };
+  async create(@Body() dto: CreateUserDto) {
+    return this.userService.create(dto).then(
+      (user) => ({
+        message: 'User created successfully',
+        data: user,
+      }),
+      (error) => {
+        const message =
+          error instanceof Error ? error.message : 'unknown error';
+        throw new Error(`User creation failed: ${message}`);
+      },
+    );
   }
 
   @Get()
   async findAll() {
-    const users = await this.userService.findAll();
-    return {
-      data: users,
-    };
+    return this.userService.findAll();
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const user = await this.userService.findOne(id);
-    return {
-      data: user,
-    };
+    return this.userService.findOne(id);
   }
 
   @Post(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const user = await this.userService.update(id, updateUserDto);
-    return {
-      message: 'User updated successfully',
-      data: user,
-    };
+    return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    const result = await this.userService.remove(id);
-    return result;
+    return this.userService.remove(id);
   }
 }
