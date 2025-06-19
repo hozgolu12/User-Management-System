@@ -56,7 +56,11 @@ const UserManagement: React.FC = () => {
 
   const filterUsers = () => {
     if (!searchTerm) {
-      setFilteredUsers(users);
+      if (isAdmin && !isSuperAdmin) {
+        setFilteredUsers(users.filter(user => !user.isSuperAdmin));
+      } else {
+        setFilteredUsers(users);
+      }
       return;
     }
 
@@ -65,7 +69,12 @@ const UserManagement: React.FC = () => {
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.address.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setFilteredUsers(filtered);
+
+    if (isAdmin && !isSuperAdmin) {
+      setFilteredUsers(filtered.filter(user => !user.isSuperAdmin));
+    } else {
+      setFilteredUsers(filtered);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
