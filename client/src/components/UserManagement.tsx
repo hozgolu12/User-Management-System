@@ -12,7 +12,7 @@ import { toast } from '@/hooks/use-toast';
 import { Edit, Trash2, Search } from 'lucide-react';
 
 const UserManagement: React.FC = () => {
-  const { user: currentUser, token, logout } = useAuth();
+  const { user: currentUser, token } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);

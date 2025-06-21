@@ -67,6 +67,27 @@ class ApiService {
     }
   }
 
+  async sendEmailVerification(email: string) {
+    return this.makeRequest('/email-verification/send', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  }
+
+  async verifyEmail(email: string, code: string) {
+    return this.makeRequest('/email-verification/verify', {
+      method: 'POST',
+      body: JSON.stringify({ email, code }),
+    });
+  }
+
+  async checkEmailExists(email: string): Promise<{ exists: boolean }> {
+    return this.makeRequest<{ exists: boolean }>('/auth/check-email', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  }
+
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     return this.makeRequest<AuthResponse>('/auth/login', {
       method: 'POST',

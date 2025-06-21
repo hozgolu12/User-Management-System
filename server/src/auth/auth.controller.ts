@@ -28,6 +28,11 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
+  @Post('check-email')
+  checkEmailExists(@Body() body: { email: string }) {
+    return this.authService.checkEmailExists(body.email);
+  }
+
   @Get('pending-admins')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')

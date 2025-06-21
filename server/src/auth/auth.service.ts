@@ -23,6 +23,11 @@ export class AuthService {
     private emailService: EmailService,
   ) {}
 
+  async checkEmailExists(email: string): Promise<{ exists: boolean }> {
+    const user = await this.userModel.findOne({ email });
+    return { exists: !!user };
+  }
+
   async signup(signupDto: SignupDto) {
     const { name, email, password, address, role } = signupDto;
 
