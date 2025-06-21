@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useAuth } from '@/contexts/useAuth';
 import { apiService } from '@/services/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/components/ui/use-toast';
+import { useEffect } from 'react';
+
 
 const Login: React.FC = () => {
+  console.log('Login component rendered');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,14 +34,17 @@ const Login: React.FC = () => {
         description: "Welcome back!",
       });
     } catch (error) {
-      toast({
+        toast({
         title: "Login failed",
-        description: "Invalid email or password",
+        description: "Invalid email or password. Please try again.",
         variant: "destructive",
+        duration: 5000, // Show error for 5 seconds
       });
-    } finally {
+    }
+    finally {
       setLoading(false);
     }
+  
   };
 
   return (

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import React, { useEffect, useState } from 'react';
+import { useAuth } from '@/contexts/useAuth';
 import { apiService } from '@/services/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,9 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
 import { Edit, Trash2 } from 'lucide-react';
+import { ApiException } from '@/services/apiUtils';
 
 const UserProfile: React.FC = () => {
-  const { user, token, logout } = useAuth();
+  const { user, token, logout, login } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: user?.name || '',
@@ -18,14 +19,11 @@ const UserProfile: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
-      await apiService.updateOwnProfile(formData, token!);
-      const updatedUser = await apiService.getUser(user!._id, token!);
-      setFormData({
-        name: updatedUser.name,
-        address: updatedUser.address
-    });
+      const updatedUser = await apiService.updateOwnProfile(formData, token);
+      if (user && token){
+        login(token, updatedUser);
+      }
       toast({
         title: "Success",
         description: "Profile updated successfully",
@@ -42,7 +40,7 @@ const UserProfile: React.FC = () => {
 
   const handleDeleteAccount = async () => {
     if (!confirm('Are you sure you want to delete your account? This action cannot be undone.')) return;
-    
+
     try {
       await apiService.deleteOwnAccount(token!);
       

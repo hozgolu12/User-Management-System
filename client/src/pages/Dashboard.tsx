@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/useAuth';
 import Header from '@/components/Header';
 import UserManagement from '@/components/UserManagement';
 import AdminApproval from '@/components/AdminApproval';

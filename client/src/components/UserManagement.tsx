@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/useAuth';
 import { apiService } from '@/services/api';
 import { User } from '@/types/auth';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,7 @@ import { toast } from '@/hooks/use-toast';
 import { Edit, Trash2, Search } from 'lucide-react';
 
 const UserManagement: React.FC = () => {
-  const { user: currentUser, token } = useAuth();
+  const { user: currentUser, token, logout } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -151,6 +151,7 @@ const UserManagement: React.FC = () => {
   };
 
   const handleDelete = async (userToDelete: User) => {
+
   if (!canDeleteUser(userToDelete)) {
     toast({
       title: "Error",

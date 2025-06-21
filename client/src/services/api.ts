@@ -1,8 +1,12 @@
 import { LoginCredentials, SignupData, AuthResponse, User } from '@/types/auth';
 import { API_CONFIG, getApiUrl } from './config';
-import { ApiException, handleApiError } from './apiUtils';
+import { ApiException, handleApiError, InvalidCredentialsException } from './apiUtils';
+
+
+
 
 class ApiService {
+    
   private getAuthHeaders(token?: string) {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -17,14 +21,25 @@ class ApiService {
 
   private async handleResponse<T>(response: Response): Promise<T> {
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'An error occurred' }));
+        const errorData = await response.json().catch(() => ({ message: 'An error occurred' }));
+        if (response.status === 401 && response.url.endsWith('/auth/login')) {
+        throw new InvalidCredentialsException(
+          errorData.message || `Invalid credentials`
+        );
+      }
+      else if (response.status === 401) {
+        console.log('Unauthorized request, redirecting to login...');
+        alert('Unauthorized request or Token expired, redirecting to login...');
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      }
       throw new ApiException(
         errorData.message || `HTTP error! status: ${response.status}`,
         response.status,
         errorData.code
       );
     }
-    
     return response.json();
   }
 
@@ -109,7 +124,7 @@ class ApiService {
     }, token);
   }
 
-  async sendApprovalEmail(emailData: any, token: string): Promise<void> {
+  async sendApprovalEmail(emailData: unknown, token: string): Promise<void> {
     await this.makeRequest<void>('/email/send-approval', {
       method: 'POST',
       body: JSON.stringify(emailData),

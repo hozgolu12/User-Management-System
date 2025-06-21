@@ -3,7 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "./contexts/useAuth";
+import { AuthProvider } from "./contexts/AuthProvider";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
@@ -15,6 +16,7 @@ const queryClient = new QueryClient();
 const AppRoutes = () => {
   const { isAuthenticated } = useAuth();
 
+  
   return (
     <Routes>
       <Route 
@@ -28,7 +30,7 @@ const AppRoutes = () => {
       <Route 
         path="/dashboard" 
         element={
-          <ProtectedRoute>
+          <ProtectedRoute >
             <Dashboard />
           </ProtectedRoute>
         } 

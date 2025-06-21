@@ -34,7 +34,6 @@ export class AuthService {
 
     // Hash password
     const saltRounds = 10;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const hashedPassword = await bcrypt
       .hash(password, saltRounds)
       .catch((error: any) => {
@@ -133,8 +132,12 @@ export class AuthService {
       isSuperAdmin: user.isSuperAdmin,
     };
 
+    const expiresIn = user.role === 'admin' ? '1d' : '60s';
+
     return {
-      token: await this.jwtService.signAsync(payload),
+      token: await this.jwtService.signAsync(payload, {
+        expiresIn,
+      }),
       user: {
         _id: user._id,
         name: user.name,

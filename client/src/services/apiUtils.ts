@@ -16,6 +16,15 @@ export class ApiException extends Error {
   }
 }
 
+export class InvalidCredentialsException extends ApiException {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InvalidCredentialsException';
+    this.status = 422;
+    this.code = 'INVALID_CREDENTIALS';
+  }
+}
+
 export const handleApiError = (error): ApiException => {
   if (error instanceof ApiException) {
     return error;
@@ -23,6 +32,9 @@ export const handleApiError = (error): ApiException => {
 
   if (error.response) {
     // HTTP error response
+    if (error.response.status === 422 && error.response.data.code === 'INVALID_CREDENTIALS') {
+      return new InvalidCredentialsException('Invalid credentials');
+    }
     return new ApiException(
       error.response.data?.message || 'An error occurred',
       error.response.status,
@@ -45,4 +57,8 @@ export const isNetworkError = (error: ApiException): boolean => {
 
 export const isAuthError = (error: ApiException): boolean => {
   return error.status === 401 || error.status === 403;
+};
+
+export const isInvalidCredentialsError = (error: ApiException): boolean => {
+  return error.status === 422 && error.code === 'INVALID_CREDENTIALS';
 };
